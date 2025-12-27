@@ -7,9 +7,22 @@
 	"name": "plantpal",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-12-25",
+	"assets": {
+		"binding": "ASSETS",
+		"directory": "./public"
+	},
 	"observability": {
 		"enabled": true
-	}
+	},
+		"durable_objects": {
+		"bindings": [
+		{ "name": "PLANT_DO", "class_name": "PlantDO" }
+		]
+	},
+	"ai": {
+		"binding": "AI"
+	}, 
+
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
@@ -28,11 +41,6 @@
 	 * https://developers.cloudflare.com/workers/configuration/secrets/
 	 */
 	// "vars": {  "MY_VARIABLE": "production_value" }
-	/**
-	 * Static Assets
-	 * https://developers.cloudflare.com/workers/static-assets/binding/
-	 */
-	// "assets": {  "directory": "./public/",  "binding": "ASSETS" }
 	/**
 	 * Service Bindings (communicate between multiple Workers)
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
