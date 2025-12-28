@@ -1,4 +1,6 @@
 import { Hono } from "hono";
+import { chatHandler } from "./endpoints/chat";
+import { createPlant } from "./endpoints/create";
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
@@ -31,5 +33,13 @@ app.get("/example-plant-call", async (c) => {
     
   return c.json(results);
 })
+
+
+//Route for creating a plant object with attributes like last_watered etc..
+app.post("/create", createPlant);
+
+//Route to interact with LLM and ask for advice about plant care
+app.post("/chat/:plantId", chatHandler);
+
 
 export default app;
