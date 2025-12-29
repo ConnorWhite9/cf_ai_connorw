@@ -7,3 +7,5 @@
 4. How do I add a frontend to my workers project would that be workers pages or would I just add a react project to my project?
 
 5. Give me commands to add Tailwind CSS to my React tsx project.
+
+6. I'm making a plant agent web app that tracks info about your plant and provides information on  how to care for it given prompts. Can you make me a HomePage.tsx, AddPlantPage.tsx, and PlantDetailPage.tsx UI design. Incorporate all the necessary components that these pages may need. Additionally, the project also uses react-router and tailwind css. make sure the pages and components are easily scalable so I can add additional features easily. 

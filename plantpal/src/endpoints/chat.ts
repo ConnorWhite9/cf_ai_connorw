@@ -1,5 +1,5 @@
 import { HonoContext } from "hono"; // type for context if using TypeScript
-import { Env } from "../storage/plantDO";
+import { Env } from "../storage/plant-do";
 
 export const chatHandler = async (c: HonoContext<Env>) => {
 

@@ -1,45 +1,60 @@
+// src/index.ts
 import { Hono } from "hono";
 import { chatHandler } from "./endpoints/chat";
 import { createPlant } from "./endpoints/create";
+import { grab } from "./endpoints/grab";
+import type { DurableObjectNamespace, ExportedHandler } from "@cloudflare/workers-types";
+import { PlantDO } from "./storage/plant-do";
 
-const app = new Hono<{ Bindings: CloudflareBindings }>();
+export interface Env {
+  PLANT_DO: DurableObjectNamespace<PlantDO>;
+}
 
-app.get("/message", (c) => {
-  return c.text("Hello Hono!");
-});
+// Re-export explicitly for Wrangler dev to detect the Durable Object
+export { PlantDO };
 
-//Example call with syntax to base all other calls on 
-app.get("/example-plant-call", async (c) => {
+// Wrangler-compatible fetch handler for DO routing
+export const durableObjectHandler = {
+  async fetch(request: Request, env: Env) {
+    const plantId = new URL(request.url).pathname.split("/")[1] || "default";
+    const stub = env.PLANT_DO.getByName(plantId);
+    return await stub.fetch(request);
+  },
+} satisfies ExportedHandler<Env>;
 
-  // Get the plant ID from URL
-  const plantId = c.req.param("plantId");    
-  // Parse user question from request body
-  const { question } = await c.req.json();        
+// Hono app for your API routes
+export const app = new Hono<{ Bindings: Env }>();
 
-  // Get the Durable Object stub for this plant
-  const stub = c.env.MY_DURABLE_OBJECT.getByName(plantId);
+// Simple test route
+app.get("/message", (c) => c.text("Hello Hono!"));
+
+// Example route interacting with a plant DO and LLM
+app.post("/example-plant-call", async (c) => {
+  const { plantId, question } = await c.req.json();
+
+  // Get the Durable Object stub
+  const stub = c.env.PLANT_DO.getByName(plantId);
 
   // Fetch plant data from the DO
-  const plantResp = await stub.fetch(new Request(`https://dummy/get`));
-  // Example: { species: "succulent", water: "weekly" 
+  const plantResp = await stub.fetch(new Request("/get"));
   const plantData = await plantResp.json();
-  
-  //Make call to LLM with context we just gathered. 
+
+  // Call LLM with context
   const results = await c.env.AI.run("@cf/meta/llama-3-8b-instruct", {
-    messages: [
-      {"role": "user", "content": "Say hello in five different languages."}
-    ]
-  })
-    
-  return c.json(results);
-})
+    messages: [{ role: "user", content: question }],
+  });
 
+  return c.json({ plantData, results });
+});
 
-//Route for creating a plant object with attributes like last_watered etc..
+// Route for creating a plant object
 app.post("/create", createPlant);
 
-//Route to interact with LLM and ask for advice about plant care
+// Route to interact with LLM and ask for plant care advice
 app.post("/chat/:plantId", chatHandler);
 
+// Route to grab plant data
+app.get("/grab/:plantId", grab);
 
+// Export default the Hono app for deployment
 export default app;

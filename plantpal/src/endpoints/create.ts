@@ -5,10 +5,10 @@ export const createPlant = async (c: HonoContext<Env>) => {
     const { plantId, plantData } = await c.req.json();
 
 
-    const stub = c.env.PlANT_DO.getByName(plantId);
+    const stub = c.env.PLANT_DO.getByName(plantId);
 
     await stub.fetch(
-        new Request("https://dummy/init", {
+        new Request("https://dummy/set", {
             method: "POST", 
             body: JSON.stringify(plantData),
         })
@@ -16,3 +16,18 @@ export const createPlant = async (c: HonoContext<Env>) => {
 
     return c.json({ message: "Plant created", plantId });
 }
+
+/* 
+
+Example Request: 
+
+{
+  "plantId": "fern-123",
+  "plantData": {
+    "name": "Fern",
+    "lastWatered": "2025-12-28",
+    "waterIntervalDays": 3
+  }
+}
+
+*/

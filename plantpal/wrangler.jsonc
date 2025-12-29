@@ -17,12 +17,19 @@
 		"durable_objects": {
 		"bindings": [
 		{ "name": "PLANT_DO", "class_name": "PlantDO" }
-		]
+		],
+		
 	},
+	"migrations": [
+		{
+		"tag": "v1",
+		"new_sqlite_classes": ["PlantDO"]
+		}
+	],
 	"ai": {
 		"binding": "AI"
 	}, 
-
+	
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
