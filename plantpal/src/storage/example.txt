@@ -1,0 +1,35 @@
+Example plant in user plants object (json): 
+
+
+{
+  "plantId": "string",
+  "name": "string",
+
+  "species": {
+    "commonName": "string",
+    "scientificName": "string"
+  },
+
+  "imageUrl": "string",
+
+  "care": {
+    "light": "low | medium | bright | direct",
+    "wateringFrequencyDays": 7,
+    "soilType": "standard | well-draining | cactus",
+    "fertilizerFrequencyDays": 30
+  },
+
+  "location": {
+    "room": "string",
+    "windowDirection": "north | south | east | west | none"
+  },
+
+  "schedule": {
+    "lastWatered": "2025-01-01"
+  },
+
+  "notes": "string",
+
+  "createdAt": "2025-01-01T12:00:00Z",
+  "updatedAt": "2025-01-02T18:30:00Z"
+}

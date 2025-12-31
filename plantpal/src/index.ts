@@ -1,7 +1,7 @@
 // src/index.ts
 import { Hono } from "hono";
 import { chatHandler } from "./endpoints/chat";
-import { createPlant } from "./endpoints/create";
+import { addPlant } from "./endpoints/add";
 import { grab } from "./endpoints/grab";
 import type { DurableObjectNamespace, ExportedHandler } from "@cloudflare/workers-types";
 import { PlantDO } from "./storage/plant-do";
@@ -48,10 +48,10 @@ app.post("/example-plant-call", async (c) => {
 });
 
 // Route for creating a plant object
-app.post("/create", createPlant);
+app.post("/add", addPlant);
 
 // Route to interact with LLM and ask for plant care advice
-app.post("/chat/:plantId", chatHandler);
+app.post("/chat", chatHandler);
 
 // Route to grab plant data
 app.get("/grab/:plantId", grab);
