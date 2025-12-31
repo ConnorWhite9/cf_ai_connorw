@@ -16,9 +16,12 @@
 	},
 		"durable_objects": {
 		"bindings": [
-		{ "name": "PLANT_DO", "class_name": "PlantDO" }
-		],
-		
+			{ "name": "PLANT_DO", "class_name": "PlantDO" },
+			{ "name": "RATE_LIMIT_DO_0", "class_name": "RateLimiterDO" },
+			{ "name": "RATE_LIMIT_DO_1", "class_name": "RateLimiterDO" },
+			{ "name": "RATE_LIMIT_DO_2", "class_name": "RateLimiterDO" }
+			],
+			
 	},
 	"migrations": [
 		{

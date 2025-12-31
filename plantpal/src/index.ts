@@ -4,14 +4,21 @@ import { chatHandler } from "./endpoints/chat";
 import { addPlant } from "./endpoints/add";
 import { grab } from "./endpoints/grab";
 import type { DurableObjectNamespace, ExportedHandler } from "@cloudflare/workers-types";
+import { rateLimitMiddleware } from "./middleware/ratelimiter";
 import { PlantDO } from "./storage/plant-do";
+import { RateLimiterDO } from "./storage/rate-limiter";
 
 export interface Env {
   PLANT_DO: DurableObjectNamespace<PlantDO>;
+
+  RATE_LIMIT_DO_0: DurableObjectNamespace;
+  RATE_LIMIT_DO_1: DurableObjectNamespace;
+  RATE_LIMIT_DO_2: DurableObjectNamespace;
 }
 
 // Re-export explicitly for Wrangler dev to detect the Durable Object
 export { PlantDO };
+export { RateLimiterDO };
 
 // Wrangler-compatible fetch handler for DO routing
 export const durableObjectHandler = {
@@ -24,6 +31,9 @@ export const durableObjectHandler = {
 
 // Hono app for your API routes
 export const app = new Hono<{ Bindings: Env }>();
+
+//Apply rate limiting
+app.use(rateLimitMiddleware());
 
 // Simple test route
 app.get("/message", (c) => c.text("Hello Hono!"));

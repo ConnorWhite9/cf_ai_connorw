@@ -5,14 +5,10 @@ import { getTokenFromRequest } from "../utils/tokens";
 export const addPlant = async (c: HonoContext<Env>) => {
     try {
         
-        
-        console.log("c", c.req.raw.headers);
+    
         const userID = getTokenFromRequest(c);
 
-        //const userID = getTokenFromRequest(c);
         const { plantData } = await c.req.json();
-        console.log("Add Plant Endpoint Hit");
-        console.log("Plant Data Received:", plantData);
 
         const id = c.env.PLANT_DO.idFromName(userID);
         const stub = c.env.PLANT_DO.get(id);

@@ -42,3 +42,7 @@ Here is the json: {
 8. Can we turn some of these fields into components this code is way too long.
 
 9. In the same style can you design me a home page that show cases all these plants where if you click on the card for a plant it takes you to a page with all the information of the plants (Don't worry about implementing that yet just implement the home page with that in mind). Also remember the data fields from the previous page and also try to use the components I had you create previously
+
+10. Can you create a hash function for the 3 shards structure I am using for my rate limiter built on Durable objects.
+
+11. Help me implement a Durable Object class that implements a rate limiter as seen in the Cloudflare Durable Objects Docs.
