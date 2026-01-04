@@ -1,11 +1,14 @@
 import type {Plant} from '../../types/index';
 import { Badge } from './Badge';
 import { Card } from './Card';
+import { useNavigate } from 'react-router-dom';
+
+import { Link } from 'react-router-dom';
 
 export const PlantCard: React.FC<{
   plant: Plant;
-  onClick: () => void;
-}> = ({ plant, onClick }) => {
+  onClick?: () => void;
+}> = ({ plant }) => {
   const daysUntilWater = Math.ceil(
     (new Date(plant.lastWatered).getTime() +
       plant.wateringFrequency * 24 * 60 * 60 * 1000 -
@@ -13,9 +16,11 @@ export const PlantCard: React.FC<{
       (24 * 60 * 60 * 1000)
   );
 
+
   return (
-    <Card onClick={onClick} hover>
-      <div className="relative">
+      <Card hover onClick={() => {}}>
+        
+        <div className="relative pointer-envents-none">
         {plant.imageUrl ? (
           <img
             src={plant.imageUrl}
@@ -27,7 +32,7 @@ export const PlantCard: React.FC<{
             <span className="text-6xl">🌿</span>
           </div>
         )}
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 right-3 pointer-events-none">
           <Badge status={plant.healthStatus} />
         </div>
       </div>
@@ -61,6 +66,8 @@ export const PlantCard: React.FC<{
           <span>{plant.location}</span>
         </div>
       </div>
+      
     </Card>
+    
   );
 };

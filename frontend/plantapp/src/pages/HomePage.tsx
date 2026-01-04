@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Leaf, Plus, Search, Droplets, Sun, MapPin, Calendar } from 'lucide-react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 interface Plant {
@@ -328,7 +328,7 @@ export default function PlantPalHome() {
               <PlantCard
                 key={plant.plantId}
                 plant={plant}
-                onClick={() => handlePlantClick(plant.plantId)}
+                onClick={() => navigate('/chat')}
               />
             ))}
           </div>

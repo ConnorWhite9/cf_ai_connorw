@@ -5,6 +5,7 @@ import AddPlantPage from "./pages/AddPlantPage";
 import {PlantDetailPage} from "./pages/PlantDetailPage";
 import HomePage from "./pages/HomePage";
 import NavBar from "./components/NavBar";
+import Chat from "./pages/Chat";
 
 import { getOrCreateToken } from './utils/auth';
 
@@ -14,13 +15,15 @@ function App() {
   return (
     <>
     <div>
-      <NavBar />
+      
 
       <Routes>
         <Route path="/" element={<HomePage/>} />
         <Route path="/plants/:id" element={<PlantDetailPage />} />
         <Route path="/add" element={<AddPlantPage />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
+      <NavBar />
     </div>
     </>
   )

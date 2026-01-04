@@ -46,3 +46,9 @@ Here is the json: {
 10. Can you create a hash function for the 3 shards structure I am using for my rate limiter built on Durable objects.
 
 11. Help me implement a Durable Object class that implements a rate limiter as seen in the Cloudflare Durable Objects Docs.
+
+12. Based off the previous pages you have made can you make me a background component for me to build off any other pages with the same look. 
+
+13. Can you make me a nice chat component for the chats to be contained in. 
+
+14. Can you make me a cool bonsai tree svg to use as the image for my home button. 
