@@ -65,6 +65,25 @@ export default function AddPlantPage() {
     notes: ''
   });
 
+  async function addPlantToBackend(plantData: any) {
+  const res = await fetch("/api/add", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", // important if using cookies/session
+    body: JSON.stringify(plantData),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    throw new Error(error || "Failed to add plant");
+  }
+
+  return res.json();
+}
+
+
   const handleSubmit = () => {
     const plantData = {
       plantId: `plant_${Date.now()}`,
@@ -92,7 +111,12 @@ export default function AddPlantPage() {
       updatedAt: new Date().toISOString()
     };
     
-    console.log('Plant Data:', plantData);
+    addPlantToBackend({ plantData })
+      .then((data) => {
+        console.log("Plant added successfully:", data)})
+        .catch((error) => {
+          console.error("Error adding plant:", error);
+        });
     alert('Plant added successfully! Check console for data.');
   };
 

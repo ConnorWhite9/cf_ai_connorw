@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Leaf, Plus, Search, Droplets, Sun, MapPin, Calendar } from 'lucide-react';
+import { useNavigate, Navigate } from 'react-router-dom';
+
 
 interface Plant {
   plantId: string;
@@ -232,6 +234,8 @@ export default function PlantPalHome() {
     document.head.appendChild(link);
   }, []);
 
+  const navigate = useNavigate();
+
   const [plants] = useState<Plant[]>(mockPlants);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -247,8 +251,7 @@ export default function PlantPalHome() {
   };
 
   const handleAddPlant = () => {
-    console.log('Navigate to add plant page');
-    alert('Navigate to Add Plant form');
+    navigate("/add");
   };
 
   const plantsNeedingWater = plants.filter(plant => {
