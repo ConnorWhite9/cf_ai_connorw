@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Loader2, User, Leaf } from 'lucide-react';
+import { useParams } from "react-router-dom";
 
 export interface ChatMessage {
   id: string;
@@ -31,6 +32,9 @@ export const PlantPalChat: React.FC<PlantPalChatProps> = ({
       timestamp: new Date()
     }
   ]);
+  const { plantId } = useParams<{ plantId: string }>();
+  const [plant, setPlant] = useState<string>(plantId || '');
+
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
@@ -46,11 +50,30 @@ export const PlantPalChat: React.FC<PlantPalChatProps> = ({
     scrollToBottom();
   }, [messages]);
 
+  async function sendRequest(plantId: string, message: string) {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", 
+      body: JSON.stringify({ plantId, message }),
+    });
+
+    if (!res.ok) {
+      const error = await res.text();
+      throw new Error(error || "Failed to send message");
+    }
+
+    return res.json();
+  }
+
+
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
-
+    
     const userMessage: ChatMessage = {
-      id: Date.now().toString(),
+      id: plant,
       role: 'user',
       content: input.trim(),
       timestamp: new Date()
@@ -64,17 +87,18 @@ export const PlantPalChat: React.FC<PlantPalChatProps> = ({
       let responseContent: string;
       
       if (onSendMessage) {
+      // Use the custom handler if provided
         responseContent = await onSendMessage(userMessage.content, messages);
       } else {
-        // Mock response for demo purposes
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        responseContent = `I received your message: "${userMessage.content}". This is a demo response. Implement the onSendMessage prop to connect to your backend!`;
+        // Default: call your API
+        const data = await sendRequest(plant, userMessage.content, messages);
+        responseContent = data.response || data.message || "No response received";  // Handle different response formats
       }
 
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: responseContent,
+        content: responseContent.response,
         timestamp: new Date()
       };
 

@@ -21,7 +21,7 @@ function App() {
         <Route path="/" element={<HomePage/>} />
         <Route path="/plants/:id" element={<PlantDetailPage />} />
         <Route path="/add" element={<AddPlantPage />} />
-        <Route path="/chat" element={<Chat />} />
+        <Route path="/chat/:plantId" element={<Chat />} />
       </Routes>
       <NavBar />
     </div>

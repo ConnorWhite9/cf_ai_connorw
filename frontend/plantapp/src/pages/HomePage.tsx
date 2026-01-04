@@ -328,7 +328,7 @@ export default function PlantPalHome() {
               <PlantCard
                 key={plant.plantId}
                 plant={plant}
-                onClick={() => navigate('/chat')}
+                onClick={() => navigate(`/chat/${plant.plantId}`)}
               />
             ))}
           </div>
