@@ -99,6 +99,10 @@ export class PlantDO {
   async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
     if (url.pathname === "/get") return new Response(JSON.stringify(await this.getPlant()), { status: 200 });
+    if (url.pathname === "/getAll") {
+      const plants = await this.getPlants();
+      return new Response(JSON.stringify(plants), { status: 200, headers: { "Content-Type": "application/json" } });
+    }
     if (url.pathname === "/set") {
       console.log("Handling /set request");
       const newPlant: Plant = await request.json();

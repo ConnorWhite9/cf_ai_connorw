@@ -1,4 +1,4 @@
-import {useEffect, useState } from 'react';
+
 import { PlantPalLayout } from '../components/Layout';
 import { PlantPalChat } from '../components/PlantPalChat';
 

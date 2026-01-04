@@ -66,5 +66,7 @@ app.post("/chat", chatHandler);
 // Route to grab plant data
 app.get("/grab/:plantId", grab);
 
+app.get("/grabAll", grabAll);
+
 // Export default the Hono app for deployment
 export default app;

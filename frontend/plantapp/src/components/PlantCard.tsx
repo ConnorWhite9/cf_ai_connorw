@@ -1,9 +1,6 @@
 import type {Plant} from '../../types/index';
 import { Badge } from './Badge';
 import { Card } from './Card';
-import { useNavigate } from 'react-router-dom';
-
-import { Link } from 'react-router-dom';
 
 export const PlantCard: React.FC<{
   plant: Plant;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Leaf, Droplets, Sun, MapPin, Calendar, FileText } from 'lucide-react';
+import { Leaf, Sun, MapPin, Calendar, FileText } from 'lucide-react';
 import TextInput from '../components/TextInput';
 import Select from '../components/Select';
 import NumberInput from '../components/NumberInput';

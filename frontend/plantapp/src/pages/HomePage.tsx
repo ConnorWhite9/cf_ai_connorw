@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Leaf, Plus, Search, Droplets, Sun, MapPin, Calendar } from 'lucide-react';
+import { Leaf, Plus, Search, Droplets, Sun, MapPin} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -234,9 +234,34 @@ export default function PlantPalHome() {
     document.head.appendChild(link);
   }, []);
 
+  const [plants, setPlants] = useState<Plant[]>([]);
+
+  React.useEffect(() => {
+    const grabPlants = async () => {
+      // Placeholder for fetching plants from backend
+      const res = await fetch("/api/grabAll", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", 
+      //body: JSON.stringify({ plantId, message }),
+    });
+
+    if (!res.ok) {
+      const error = await res.text();
+      throw new Error(error || "Failed to send message");
+    }
+
+    return res.json();
+    }
+    const data = grabPlants();
+    setPlants(data.plants || mockPlants);
+  }, [plants]);
+
   const navigate = useNavigate();
 
-  const [plants] = useState<Plant[]>(mockPlants);
+  //const [plants] = useState<Plant[]>(mockPlants);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredPlants = plants.filter(plant =>
@@ -245,10 +270,6 @@ export default function PlantPalHome() {
     plant.species.scientificName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handlePlantClick = (plantId: string) => {
-    console.log('Navigate to plant detail page:', plantId);
-    alert(`Navigating to ${plants.find(p => p.plantId === plantId)?.name} detail page`);
-  };
 
   const handleAddPlant = () => {
     navigate("/add");
@@ -289,13 +310,13 @@ export default function PlantPalHome() {
         {/* Stats and Search */}
         <div className="mb-8 space-y-4">
           {plantsNeedingWater.length > 0 && (
-            <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4 flex items-center gap-3">
+            <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4 flex justify-center items-center gap-4">
               <Droplets className="w-6 h-6 text-red-400" />
               <div>
-                <p className="text-red-200 font-semibold">
+                <p className="text-red-200 font-semibold text-center">
                   {plantsNeedingWater.length} plant{plantsNeedingWater.length !== 1 ? 's' : ''} need{plantsNeedingWater.length === 1 ? 's' : ''} watering!
                 </p>
-                <p className="text-red-300 text-sm">
+                <p className="text-red-300 text-sm text-center">
                   {plantsNeedingWater.map(p => p.name).join(', ')}
                 </p>
               </div>
