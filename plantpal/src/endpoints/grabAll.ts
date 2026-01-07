@@ -2,7 +2,7 @@ import { HonoContext } from "hono"; // type for context if using TypeScript
 import { Env } from "../storage/plant-do";
 import { getTokenFromRequest } from "../utils/tokens";
 
-export const grab = async (c: HonoContext<Env>) => {
+export const grabAll = async (c: HonoContext<Env>) => {
 
   // Get the plant ID from URL
   const token = getTokenFromRequest(c);

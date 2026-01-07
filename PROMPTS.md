@@ -52,3 +52,5 @@ Here is the json: {
 13. Can you make me a nice chat component for the chats to be contained in. 
 
 14. Can you make me a cool bonsai tree svg to use as the image for my home button. 
+
+15. Based on my PlantCard component can you build me an EditForm component for all the appropriate data fields. 

@@ -4,7 +4,8 @@ import TextInput from '../components/TextInput';
 import Select from '../components/Select';
 import NumberInput from '../components/NumberInput';
 import SectionHeader from '../components/Sectionheader';
-
+import { useAuth } from '../utils/auth';
+import { useNavigate } from 'react-router-dom';
 
 interface PlantFormData {
   name: string;
@@ -41,7 +42,16 @@ const windowOptions = [
   { value: 'west', label: 'West-facing' }
 ]
 
+const apiBaseUrl: string = import.meta.env.VITE_API_BASE_URL;
+
+const defaultImages = [
+  'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=400',
+  'https://images.unsplash.com/photo-1523413651479-597eb2da0ad6?w=400',
+  'https://images.unsplash.com/photo-1509587584298-0f3b3a3a1797?w=400'];
+
 export default function AddPlantPage() {
+
+  const navigate = useNavigate();
   // Load custom fonts
   React.useEffect(() => {
     const link = document.createElement('link');
@@ -65,23 +75,26 @@ export default function AddPlantPage() {
     notes: ''
   });
 
+  const token = useAuth();
+
   async function addPlantToBackend(plantData: any) {
-  const res = await fetch("/api/add", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include", // important if using cookies/session
-    body: JSON.stringify(plantData),
-  });
+    const res = await fetch(`/api/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      credentials: "include", // important if using cookies/session
+      body: JSON.stringify(plantData),
+    });
 
-  if (!res.ok) {
-    const error = await res.text();
-    throw new Error(error || "Failed to add plant");
+    if (!res.ok) {
+      const error = await res.text();
+      throw new Error(error || "Failed to add plant");
+    }
+
+    return res.json();
   }
-
-  return res.json();
-}
 
 
   const handleSubmit = () => {
@@ -92,7 +105,7 @@ export default function AddPlantPage() {
         commonName: formData.commonName,
         scientificName: formData.scientificName
       },
-      imageUrl: formData.imageUrl,
+      imageUrl: formData.imageUrl || defaultImages[Math.floor(Math.random() * defaultImages.length)],
       care: {
         light: formData.light,
         wateringFrequencyDays: formData.wateringFrequencyDays,
@@ -117,7 +130,7 @@ export default function AddPlantPage() {
         .catch((error) => {
           console.error("Error adding plant:", error);
         });
-    alert('Plant added successfully! Check console for data.');
+    navigate('/');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {

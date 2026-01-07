@@ -3,6 +3,8 @@ import { Hono } from "hono";
 import { chatHandler } from "./endpoints/chat";
 import { addPlant } from "./endpoints/add";
 import { grab } from "./endpoints/grab";
+import { grabAll } from "./endpoints/grabAll";
+import { demo } from "./endpoints/demo";
 import type { DurableObjectNamespace, ExportedHandler } from "@cloudflare/workers-types";
 import { rateLimitMiddleware } from "./middleware/ratelimiter";
 import { PlantDO } from "./storage/plant-do";
@@ -58,15 +60,17 @@ app.post("/example-plant-call", async (c) => {
 });
 
 // Route for creating a plant object
-app.post("/add", addPlant);
+app.post("/api/add", addPlant);
 
 // Route to interact with LLM and ask for plant care advice
 app.post("/chat", chatHandler);
 
 // Route to grab plant data
-app.get("/grab/:plantId", grab);
+app.get("/api/grab/:plantId", grab);
 
-app.get("/grabAll", grabAll);
+app.get("/api/grabAll", grabAll);
+
+app.post("/api/demo", demo);
 
 // Export default the Hono app for deployment
 export default app;

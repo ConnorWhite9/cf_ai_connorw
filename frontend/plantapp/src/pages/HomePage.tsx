@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Leaf, Plus, Search, Droplets, Sun, MapPin} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { PlantPalHeader } from '../components/Header';
+import { useAuth } from '../utils/auth';
 
 
 interface Plant {
@@ -226,6 +228,7 @@ const SearchInput = ({ value, onChange }: any) => (
   </div>
 );
 
+
 export default function PlantPalHome() {
   React.useEffect(() => {
     const link = document.createElement('link');
@@ -235,41 +238,51 @@ export default function PlantPalHome() {
   }, []);
 
   const [plants, setPlants] = useState<Plant[]>([]);
+  const token = useAuth();
 
-  React.useEffect(() => {
+    React.useEffect(() => {
     const grabPlants = async () => {
-      // Placeholder for fetching plants from backend
-      const res = await fetch("/api/grabAll", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", 
-      //body: JSON.stringify({ plantId, message }),
-    });
+      try {
+        const res = await fetch("/api/grabAll", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
 
-    if (!res.ok) {
-      const error = await res.text();
-      throw new Error(error || "Failed to send message");
-    }
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(errorText || "Failed to fetch plants");
+        }
 
-    return res.json();
-    }
-    const data = grabPlants();
-    setPlants(data.plants || mockPlants);
-  }, [plants]);
+        const data = await res.json();
+        console.log("Fetched plants:", data);
+        setPlants(data ?? []); // ✅ fallback to empty array
+
+      } catch (err) {
+        console.error("Error fetching plants:", err);
+        setPlants([]); // safe fallback
+      }
+    };
+    grabPlants(); // ✅ call the async function\
+  
+
+  }, []); // ✅ run once on mount
+
 
   const navigate = useNavigate();
 
   //const [plants] = useState<Plant[]>(mockPlants);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredPlants = plants.filter(plant =>
+  /*const filteredPlants = plants.filter(plant =>
     plant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     plant.species.commonName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     plant.species.scientificName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  );*/
 
+  const filteredPlants = plants;
 
   const handleAddPlant = () => {
     navigate("/add");
@@ -286,24 +299,7 @@ export default function PlantPalHome() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-950 to-emerald-950" style={{ fontFamily: "'Quicksand', sans-serif" }}>
       {/* Header */}
-      <header className="bg-gray-800/50 border-b border-green-900/30 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Leaf className="w-8 h-8 text-emerald-400" />
-            <h1 className="text-3xl font-bold text-emerald-100" style={{ fontFamily: "'Comfortaa', sans-serif" }}>
-              PlantPal
-            </h1>
-          </div>
-          
-          <button
-            onClick={handleAddPlant}
-            className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold py-2.5 px-5 rounded-lg hover:from-emerald-500 hover:to-green-500 transition-all shadow-lg hover:shadow-emerald-500/50"
-          >
-            <Plus className="w-5 h-5" />
-            Add Plant
-          </button>
-        </div>
-      </header>
+      <PlantPalHeader />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">

@@ -24,7 +24,7 @@ export const addPlant = async (c: HonoContext<Env>) => {
 
     } catch (error) {
         console.log("Error in addPlant:", error);
-        return c.json({ error: (error as Error).message, "connor": "Why is it not working" }, 400);
+        return c.json({ error: (error as Error).message }, 400);
     }
 }
 

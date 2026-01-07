@@ -11,8 +11,12 @@ export const rateLimitMiddleware = (env: RateLimiterEnv) => {
         c.req.header("X-Forwarded-For") ||'';
         console.log("Extracted IP:", ip);
         if (!ip) {
-            console.log("Missing CF-Connecting-IP header");
-            return c.text("Cannot determine IP", 400);
+           console.warn(
+                "[rate-limit] No client IP detected. Skipping rate limiting (likely local dev)."
+            );
+
+            await next();
+            return;
         } 
         const index = shardKey(ip);
         const stub = env[`RATE_LIMIT_DO_${index}`].idFromName("shard");

@@ -1,6 +1,7 @@
 // Header component
 import { Leaf, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../utils/auth";
 
 interface PlantPalHeaderProps {
   showAddButton?: boolean;
@@ -13,7 +14,31 @@ export const PlantPalHeader: React.FC<PlantPalHeaderProps> = ({
   onAddClick,
   rightContent 
 }) => {
+  const token = useAuth();
   const navigate = useNavigate();
+
+  
+    const demoPlants = async () => {
+      // Placeholder for fetching plants from backend
+      const res = await fetch("/api/demo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        credentials: "include", 
+        //body: JSON.stringify({ plantId, message }),
+      });
+  
+      if (!res.ok) {
+        const error = await res.text();
+        throw new Error(error || "Failed to send message");
+      }
+  
+      return res.json();
+      }
+      
+
   
   const handleAddClick = () => {
     if (onAddClick) {
@@ -41,6 +66,7 @@ export const PlantPalHeader: React.FC<PlantPalHeaderProps> = ({
         </div>
         
         {rightContent || (showAddButton && (
+          <>
           <button
             onClick={handleAddClick}
             className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold py-2.5 px-5 rounded-lg hover:from-emerald-500 hover:to-green-500 transition-all shadow-lg hover:shadow-emerald-500/50"
@@ -48,6 +74,14 @@ export const PlantPalHeader: React.FC<PlantPalHeaderProps> = ({
             <Plus className="w-5 h-5" />
             Add Plant
           </button>
+          <button
+            onClick={demoPlants}
+            className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold py-2.5 px-5 rounded-lg hover:from-emerald-500 hover:to-green-500 transition-all shadow-lg hover:shadow-emerald-500/50"
+          >
+            <Plus className="w-5 h-5" />
+            Demo Plants
+          </button>
+          </>
         ))}
       </div>
     </header>

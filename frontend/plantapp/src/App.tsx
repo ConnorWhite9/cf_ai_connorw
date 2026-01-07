@@ -6,11 +6,10 @@ import {PlantDetailPage} from "./pages/PlantDetailPage";
 import HomePage from "./pages/HomePage";
 import NavBar from "./components/NavBar";
 import Chat from "./pages/Chat";
+import EditPage from "./pages/EditPage";
 
-import { getOrCreateToken } from './utils/auth';
 
 function App() {
-  const token = getOrCreateToken(); 
 
   return (
     <>
@@ -22,6 +21,7 @@ function App() {
         <Route path="/plants/:id" element={<PlantDetailPage />} />
         <Route path="/add" element={<AddPlantPage />} />
         <Route path="/chat/:plantId" element={<Chat />} />
+        <Route path="/edit/:plantId" element={<EditPage />} />
       </Routes>
       <NavBar />
     </div>
