@@ -8,14 +8,16 @@ export const addPlant = async (c: HonoContext<Env>) => {
     
         const userID = getTokenFromRequest(c);
 
-        const { plantData } = await c.req.json();
+        const body = await c.req.json();
+
+        console.log("Received plant data to add:", body);
 
         const id = c.env.PLANT_DO.idFromName(userID);
         const stub = c.env.PLANT_DO.get(id);
         const res = await stub.fetch(
             new Request("https://dummy/set", {
                 method: "POST", 
-                body: JSON.stringify(plantData),
+                body: JSON.stringify(body),
             })
         )
 

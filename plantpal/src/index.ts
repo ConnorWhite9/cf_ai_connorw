@@ -63,7 +63,7 @@ app.post("/example-plant-call", async (c) => {
 app.post("/api/add", addPlant);
 
 // Route to interact with LLM and ask for plant care advice
-app.post("/chat", chatHandler);
+app.post("/api/chat", chatHandler);
 
 // Route to grab plant data
 app.get("/api/grab/:plantId", grab);

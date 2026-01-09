@@ -258,17 +258,17 @@ export default function PlantPalHome() {
 
         const data = await res.json();
         console.log("Fetched plants:", data);
-        setPlants(data ?? []); // ✅ fallback to empty array
+        setPlants(data ?? []); 
 
       } catch (err) {
         console.error("Error fetching plants:", err);
-        setPlants([]); // safe fallback
+        setPlants([]); 
       }
     };
-    grabPlants(); // ✅ call the async function\
+    grabPlants();
   
 
-  }, []); // ✅ run once on mount
+  }, []);
 
 
   const navigate = useNavigate();
@@ -284,11 +284,9 @@ export default function PlantPalHome() {
 
   const filteredPlants = plants;
 
-  const handleAddPlant = () => {
-    navigate("/add");
-  };
 
-  const plantsNeedingWater = plants.filter(plant => {
+  const plantsNeedingWater = filteredPlants.filter(plant => {
+    console.log("Here is the individual plant for watering check:", plant);
     const lastWatered = new Date(plant.schedule.lastWatered);
     const today = new Date();
     const daysSinceWatered = Math.floor((today.getTime() - lastWatered.getTime()) / (1000 * 60 * 60 * 24));

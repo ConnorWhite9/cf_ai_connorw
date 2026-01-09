@@ -99,7 +99,7 @@ export default function AddPlantPage() {
 
   const handleSubmit = () => {
     const plantData = {
-      plantId: `plant_${Date.now()}`,
+      plantId: `${crypto.randomUUID()}`,
       name: formData.name,
       species: {
         commonName: formData.commonName,
@@ -124,7 +124,7 @@ export default function AddPlantPage() {
       updatedAt: new Date().toISOString()
     };
     
-    addPlantToBackend({ plantData })
+    addPlantToBackend(plantData)
       .then((data) => {
         console.log("Plant added successfully:", data)})
         .catch((error) => {

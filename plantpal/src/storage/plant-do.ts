@@ -8,7 +8,7 @@ interface ChatMessage {
 }
 
 interface Plant {
-  id: string;
+  plantId : string;
   name: string;
   species: string;
   chat?: ChatMessage[];
@@ -42,19 +42,22 @@ export class PlantDO {
   private async handleChat(req: Request) {
 
     const { plantId, message } = (await req.json()) as { plantId: string; message: string };
-
     if (!plantId || !message) {
-      return new Response("Missing plantId or message", { status: 400 });
+      return new Response(
+        JSON.stringify({ error: "Missing plantId or message" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     // Load all plants for this user
     const plants: Plant[] = (await this.state.storage.get("plants")) || [];
-    const plant = plants.find(p => p.id === plantId);
-
+    const plant = plants.find(p => p.plantId === plantId);
     if (!plant) {
-      return new Response("Plant not found", { status: 404 });
+      return new Response(
+        JSON.stringify({ error: "Plant not found" }),
+        { status: 404, headers: { "Content-Type": "application/json" } }
+      );
     }
-
     // Initialize chat history if first message
     plant.chat ||= [];
 
@@ -77,13 +80,14 @@ export class PlantDO {
       `;
 
     // Call AI
+    console.log("Sending prompt to AI:", prompt);
     const answer = await (this.env as any).AI.run(
-      "@cf/meta/llama-3.3-70b-instruct",
+      "@cf/meta/llama-3-8b-instruct",
       { prompt }
     );
 
-    const assistantReply = answer.output_text;
-
+    const assistantReply = answer.response;
+    console.log("AI assistant reply:", assistantReply);
     // Store assistant reply
     plant.chat.push({
       role: "assistant",
@@ -173,10 +177,17 @@ export class PlantDO {
     }
     if (url.pathname === "/set") {
       console.log("Handling /set request");
-      const newPlant: Plant = await request.json();
+      const incoming: any = await request.json() 
+
+      const newPlant: Plant = {
+        ...incoming, 
+        id: incoming.plantId
+      }
+
+      console.log("New plant data received:", newPlant);
 
       const plants = await this.getPlants();
-      const existingIndex = plants.findIndex(p => p.id === newPlant.id);
+      const existingIndex = plants.findIndex(p => p.plantId === newPlant.plantId);
 
       if (existingIndex > -1) {
         // Replace existing plant

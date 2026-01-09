@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Loader2, User, Leaf } from 'lucide-react';
 import { useParams } from "react-router-dom";
+import { useAuth } from '../utils/auth';
 
 export interface ChatMessage {
   id: string;
@@ -46,6 +47,8 @@ export const PlantPalChat: React.FC<PlantPalChatProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const token = useAuth();
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -55,6 +58,7 @@ export const PlantPalChat: React.FC<PlantPalChatProps> = ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
       credentials: "include", 
       body: JSON.stringify({ plantId, message }),
@@ -65,7 +69,9 @@ export const PlantPalChat: React.FC<PlantPalChatProps> = ({
       throw new Error(error || "Failed to send message");
     }
 
-    return res.json();
+    const response = await res.json();
+    console.log("Chat API response:", response);
+    return response;
   }
 
 
@@ -79,28 +85,26 @@ export const PlantPalChat: React.FC<PlantPalChatProps> = ({
       timestamp: new Date()
     };
 
+
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
-    try {
-      let responseContent: string;
+    try {      
+     
+      // Call Chat Handler
+      const data = await sendRequest(plant, userMessage.content);
+      const responseContent = data || "No response received";  // Handle different response formats
       
-      if (onSendMessage) {
-      // Use the custom handler if provided
-        responseContent = await onSendMessage(userMessage.content, messages);
-      } else {
-        // Default: call your API
-        const data = await sendRequest(plant, userMessage.content, messages);
-        responseContent = data.response || data.message || "No response received";  // Handle different response formats
-      }
 
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: responseContent.response,
+        content: responseContent.answer,
         timestamp: new Date()
       };
+
+      console.log("Assistant message:", assistantMessage);
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
