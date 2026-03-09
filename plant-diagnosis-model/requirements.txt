@@ -1,0 +1,9 @@
+torch
+torchvision
+timm
+pyyaml
+scikit-learn
+numpy
+Pillow
+rich
+
